@@ -10,12 +10,12 @@ namespace DemoPolly.ResiliencePatterns
     public static class ResilienceHttpPoliciy
     {
         // Config Retry
-        private const int NUMBER_OF_RETRIES = 2;
+        private const int NUMBER_OF_RETRIES = 3;
         private const int SECONDS_WAIT_IN_SECONDS = 5;
 
         // Config Cicuit Breaker
-        private const int EXCEPTION_ALLOWED_BEFORE_BREAKING = 5;
-        private const int DURATION_OF_BREAK_IN_SECONDS = 60;
+        private const int EXCEPTION_ALLOWED_BEFORE_BREAKING = 6;
+        private const int DURATION_OF_BREAK_IN_SECONDS = 30;
 
         // Policies
         private static AsyncFallbackPolicy<HttpResponseMessage> FallbackPolicy()
@@ -37,7 +37,7 @@ namespace DemoPolly.ResiliencePatterns
                     retryAttempt => TimeSpan.FromSeconds(SECONDS_WAIT_IN_SECONDS),
                     onRetry: (httpResponse, timespan, retryCount, context) =>
                     {
-                        ShowMessage($"Attempt: {retryCount}/{NUMBER_OF_RETRIES}", ConsoleColor.Yellow);
+                        ShowMessage($"*** Attempt: {retryCount}/{NUMBER_OF_RETRIES}", ConsoleColor.Cyan);
                     });
         }
 
@@ -76,7 +76,7 @@ namespace DemoPolly.ResiliencePatterns
         {
             var response = new HttpResponseMessage { StatusCode = HttpStatusCode.NotFound };
 
-            ShowMessage("Fallback => Running the Plan 'B' ", ConsoleColor.Yellow);
+            ShowMessage("Fallback => Running the Plan 'B' ", ConsoleColor.Blue);
 
             return Task.FromResult(response);
         }
@@ -111,7 +111,7 @@ namespace DemoPolly.ResiliencePatterns
         // Conditionals
         private static Task LogFallback(string message)
         {
-            ShowMessage(message, ConsoleColor.Yellow);
+            ShowMessage(message, ConsoleColor.Blue);
             return Task.CompletedTask;
         }
 
